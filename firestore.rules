@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /diaries/{diaryId} {
+      // 기존 문서를 읽거나, 수정하거나, 삭제할 때
+      // 문서에 저장된 userId가 로그인한 사용자의 ID와 일치하는지 확인
+      allow read, update, delete: if request.auth.uid == resource.data.userId;
+
+      // 새 문서를 생성할 때
+      // 생성하려는 문서의 userId가 로그인한 사용자의 ID와 일치하는지 확인
+      allow create: if request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
